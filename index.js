@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 
 // connect with mongodb
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.efpjwcu.mongodb.net/?retryWrites=true&w=majority`;
 // console.log(uri);
 const client = new MongoClient(uri, {
@@ -42,6 +42,16 @@ async function run() {
       const count = await productCollection.estimatedDocumentCount();
       //   console.log(count);
       res.send({ count, products });
+    });
+    app.post("/productsByIds", async (req, res) => {
+      const ids = req.body;
+      console.log(ids);
+      const objectIds = ids.map((id) => ObjectId(id));
+      const query = { _id: { $in: objectIds } };
+      //   const query = {};
+      const cursor = productCollection.find(query);
+      const products = await cursor.toArray();
+      res.send(products);
     });
   } finally {
   }
