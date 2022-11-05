@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
@@ -48,7 +49,7 @@ async function run() {
       console.log(ids);
       const objectIds = ids.map((id) => ObjectId(id));
       const query = { _id: { $in: objectIds } };
-      //   const query = {};
+      // const query = {};
       const cursor = productCollection.find(query);
       const products = await cursor.toArray();
       res.send(products);
