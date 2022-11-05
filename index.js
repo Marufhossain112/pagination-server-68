@@ -25,6 +25,11 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
+// a funtion to verify jwt token
+const verifyJWT = (req, res, next) => {
+  console.log(req.headers.authorization);
+};
+
 // set up the base function
 async function run() {
   try {
@@ -40,8 +45,7 @@ async function run() {
     });
 
     // orders api
-    app.get("/orders", async (req, res) => {
-      console.log(req.headers.authorization);
+    app.get("/orders", verifyJWT, async (req, res) => {
       let query = {};
       if (req.query.email) {
         query = {
