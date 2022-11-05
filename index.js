@@ -36,8 +36,23 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "1h",
       });
-      res.send({token}); /* {} for converting to the object */
+      res.send({ token }); /* {} for converting to the object */
     });
+
+    // orders api
+    app.get("/orders", async (req, res) => {
+      console.log(req.headers.authorization);
+      let query = {};
+      if (req.query.email) {
+        query = {
+          email: req.query.email,
+        };
+      }
+      const cursor = productCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+
     // api for getting the data to client from database
     app.get("/products", async (req, res) => {
       const query = {};
