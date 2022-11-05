@@ -29,6 +29,11 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const productCollection = client.db("emaJohn").collection("products");
+    // creating api in the server for jwt token
+    app.post("/jwt", (req, res) => {
+      const user = req.body;
+      console.log(user);
+    });
     // api for getting the data to client from database
     app.get("/products", async (req, res) => {
       const query = {};
