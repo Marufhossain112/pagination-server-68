@@ -30,13 +30,13 @@ const verifyJWT = (req, res, next) => {
   // console.log(req.headers.authorization);
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    res.status(401).send({ message: "Unauthorized request" });
+    return res.status(401).send({ message: "Unauthorized request" });
   }
   const token = authHeader.split(" ")[1];
   // console.log(token);
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
     if (err) {
-      res.status(401).send({ message: "Unauthorized request" });
+      return res.status(403).send({ message: "Unauthorized request" });
     }
     req.decoded = decoded;
     next();
@@ -59,6 +59,12 @@ async function run() {
 
     // orders api
     app.get("/orders", verifyJWT, async (req, res) => {
+      const decoded = req.decoded;
+      // console.log("Required information", decoded);
+      if (decoded.email !== req.query.email) {
+        res.status(403).send({message:"Unauthorized access"})
+        console.log("I am wrong");
+      }
       let query = {};
       if (req.query.email) {
         query = {
